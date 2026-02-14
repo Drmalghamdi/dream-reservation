@@ -7,9 +7,9 @@
   body {
     font-family: 'Arial', sans-serif;
     text-align: center;
-    padding: 50px;
+    padding: 30px;
     margin: 0;
-    background: url('https://i.imgur.com/lvM3Xrn.jpg') no-repeat center center fixed; /* dreamy background image */
+    background: url('https://i.imgur.com/lvM3Xrn.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #fff;
     text-shadow: 1px 1px 3px #000;
@@ -39,12 +39,28 @@
     font-size: 22px;
     color: #ffd700;
   }
+  /* Ticket style */
+  .ticket {
+    background-color: rgba(0,0,0,0.7);
+    color: #ffd700;
+    border: 3px dashed #ff69b4;
+    padding: 20px;
+    margin: 30px auto;
+    width: 300px;
+    border-radius: 15px;
+    font-size: 18px;
+    text-align: left;
+  }
+  .ticket h2 {
+    text-align: center;
+    margin-bottom: 15px;
+  }
 </style>
 </head>
 <body>
 
 <h1>🌙 Dream Reservation System 🌙</h1>
-<p>Reserve your dream session with me!</p>
+<p>Reserve your dream session with me and get your Dream Ticket!</p>
 
 <div id="form-container">
   <input type="text" id="name" placeholder="Your Name"><br>
@@ -68,6 +84,7 @@
 </div>
 
 <div id="result"></div>
+<div id="ticket"></div>
 
 <script>
 function reserveDream() {
@@ -78,6 +95,7 @@ function reserveDream() {
 
   if(!date || !time) {
     document.getElementById('result').innerHTML = "Please select a date and time for your dream!";
+    document.getElementById('ticket').innerHTML = "";
     return;
   }
 
@@ -90,17 +108,29 @@ function reserveDream() {
   ];
 
   const index = Math.floor(Math.random() * messages.length);
-  let resultMsg = messages[index];
+  const resultMsg = messages[index];
+  document.getElementById('result').innerHTML = resultMsg;
 
   if(resultMsg.includes("Congratulations")) {
     const dreamSeconds = Math.floor(Math.random() * 300) + 30; // 30-330 sec
     const price = dreamSeconds * 10000000;
-    resultMsg += `<br>${name}, your ${dreamSeconds}-second ${type} dream on ${date} at ${time} costs: ${price.toLocaleString()} 🪙 per second`;
-  } else {
-    resultMsg += `<br>Try another time or dream type!`;
-  }
 
-  document.getElementById('result').innerHTML = resultMsg;
+    // Show Dream Ticket
+    document.getElementById('ticket').innerHTML = `
+      <div class="ticket">
+        <h2>🌙 Dream Ticket 🌙</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Date:</strong> ${date}</p>
+        <p><strong>Time:</strong> ${time}</p>
+        <p><strong>Dream Type:</strong> ${type}</p>
+        <p><strong>Duration:</strong> ${dreamSeconds} seconds</p>
+        <p><strong>Price:</strong> ${price.toLocaleString()} 🪙 per second</p>
+        <p style="text-align:center; margin-top:10px;">✨ Sweet dreams! ✨</p>
+      </div>
+    `;
+  } else {
+    document.getElementById('ticket').innerHTML = "";
+  }
 }
 </script>
 
