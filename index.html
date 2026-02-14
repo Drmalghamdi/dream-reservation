@@ -9,7 +9,7 @@
     text-align: center;
     padding: 50px;
     margin: 0;
-    background: url('https://i.imgur.com/lvM3Xrn.jpg') no-repeat center center fixed;
+    background: url('https://i.imgur.com/lvM3Xrn.jpg') no-repeat center center fixed; /* dreamy background image */
     background-size: cover;
     color: #fff;
     text-shadow: 1px 1px 3px #000;
@@ -48,7 +48,14 @@
 
 <div id="form-container">
   <input type="text" id="name" placeholder="Your Name"><br>
-  <input type="number" id="time" placeholder="Dream Time (hour 0-24)"><br>
+  
+  <label for="dreamDate">Pick a date:</label>
+  <input type="date" id="dreamDate"><br>
+  
+  <label for="dreamTime">Pick a time:</label>
+  <input type="time" id="dreamTime"><br>
+  
+  <label for="type">Type of Dream:</label>
   <select id="type">
     <option value="Drama">Drama</option>
     <option value="Action">Action</option>
@@ -56,64 +63,45 @@
     <option value="Comedy">Comedy</option>
     <option value="Horror">Horror</option>
   </select><br>
+  
   <button onclick="reserveDream()">Reserve Dream</button>
 </div>
 
 <div id="result"></div>
 
 <script>
-  // --- Activate joke for 48 hours from first load ---
-  const firstVisitKey = "dreamReservationStart";
-  let startTime = localStorage.getItem(firstVisitKey);
+function reserveDream() {
+  const name = document.getElementById('name').value || "Anonymous";
+  const date = document.getElementById('dreamDate').value;
+  const time = document.getElementById('dreamTime').value;
+  const type = document.getElementById('type').value;
 
-  if(!startTime) {
-    startTime = new Date().getTime();
-    localStorage.setItem(firstVisitKey, startTime);
+  if(!date || !time) {
+    document.getElementById('result').innerHTML = "Please select a date and time for your dream!";
+    return;
   }
 
-  const now = new Date().getTime();
-  const durationMs = 48 * 60 * 60 * 1000; // 48 hours in ms
+  const messages = [
+    "Sorry, this time is overbooked 😢",
+    "Rest time! Try another time 💤",
+    "Not available, dreams are busy 😎",
+    "Sorry, time reserved for charity ❤️",
+    "Congratulations! Your dream is reserved 🎉"
+  ];
 
-  if(now - startTime > durationMs) {
-    // Joke expired
-    document.body.innerHTML = `
-      <h1>🌙 Dream Reservation Closed 🌙</h1>
-      <p>Sorry, the Dream Reservation joke has ended. 😴</p>
-      <p>Thanks for participating in the dream fun!</p>
-    `;
+  const index = Math.floor(Math.random() * messages.length);
+  let resultMsg = messages[index];
+
+  if(resultMsg.includes("Congratulations")) {
+    const dreamSeconds = Math.floor(Math.random() * 300) + 30; // 30-330 sec
+    const price = dreamSeconds * 10000000;
+    resultMsg += `<br>${name}, your ${dreamSeconds}-second ${type} dream on ${date} at ${time} costs: ${price.toLocaleString()} 🪙 per second`;
+  } else {
+    resultMsg += `<br>Try another time or dream type!`;
   }
 
-  // --- Reservation function ---
-  function reserveDream() {
-    const name = document.getElementById('name').value || "Anonymous";
-    const time = parseInt(document.getElementById('time').value);
-    const type = document.getElementById('type').value;
-
-    const messages = [
-      "Sorry, this time is overbooked 😢",
-      "Rest time! Try another time 💤",
-      "Not available, dreams are busy 😎",
-      "Sorry, time reserved for charity ❤️",
-      "Congratulations! Your dream is reserved 🎉"
-    ];
-
-    let resultMsg;
-
-    if (isNaN(time) || time < 0 || time > 24) {
-      resultMsg = "Please enter a valid time between 0 and 24.";
-    } else {
-      const index = Math.floor(Math.random() * messages.length);
-      resultMsg = messages[index];
-
-      if(resultMsg.includes("Congratulations")) {
-        const dreamSeconds = Math.floor(Math.random() * 300) + 30; // 30-330 sec
-        const price = dreamSeconds * 10000000;
-        resultMsg += `<br>${name}, your ${dreamSeconds}-second ${type} dream costs: ${price.toLocaleString()} 🪙 per second`;
-      }
-    }
-
-    document.getElementById('result').innerHTML = resultMsg;
-  }
+  document.getElementById('result').innerHTML = resultMsg;
+}
 </script>
 
 </body>
